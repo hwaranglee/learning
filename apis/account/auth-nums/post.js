@@ -6,7 +6,6 @@ module.exports = {
     validation: () => {
         return (req, res, next) => {
             let body = req.body
-
             
 
             next()
@@ -15,21 +14,21 @@ module.exports = {
 
     authNumGenerator: () => {
         return (req, res, next) => {
-            
+
             next()
         }
     },
 
     encryption: () => {
         return (req, res, next) => {
-            
+
             next()
         }
     },
 
     syncDB: (db) => {
         return (req, res, next) => {
-            
+
             next()
         }
     },
