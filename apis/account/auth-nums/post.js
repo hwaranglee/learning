@@ -6,7 +6,7 @@ module.exports = {
     validation: () => {
         return (req, res, next) => {
             let body = req.body
-            
+
 
             next()
         }
@@ -15,6 +15,7 @@ module.exports = {
     authNumGenerator: () => {
         return (req, res, next) => {
 
+            
             next()
         }
     },
