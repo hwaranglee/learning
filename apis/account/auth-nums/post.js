@@ -7,30 +7,30 @@ module.exports = {
         return (req, res, next) => {
             let body = req.body
 
-            if(body.type === undefined || body.key === undefined){
+            if (body.type === undefined || body.key === undefined) {
                 res.status = 400
                 return res.json({code: '400_2'})
             }
 
-            if(body.type !== authNumStd.authNumTypePhone && body.type !== authNumStd.authNumTypeEmail){
+            if (body.type !== authNumStd.authNumTypePhone && body.type !== authNumStd.authNumTypeEmail) {
                 res.status = 400
                 return res.json({code: '400_1'})
             }
 
             let regExp = null
             let code = null
-            if(body.type === authNumStd.authNumTypePhone) {
+            if (body.type === authNumStd.authNumTypePhone) {
                 regExp = /^01(?:0|1|[6-9])-(?:\d{3}|\d{4})-\d{4}$/;
                 code = '400_4'
-            } else if(body.type === authNumStd.authNumTypeEmail){
+            } else if (body.type === authNumStd.authNumTypeEmail) {
                 regExp = /^[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*.[a-zA-Z]{2,3}$/i;
                 code = '400_3'
-            } else{
+            } else {
                 console.log("type error입니다.")
             }
 
-            if (regExp !== null){
-                const isValidKey=RegExp.error(body.key)
+            if (regExp !== null) {
+                const isValidKey = RegExp.error(body.key)
 
                 if (!isValidKey) {
                     res.status = 400
@@ -39,6 +39,7 @@ module.exports = {
             } else {
                 console.log("type error입니다.")
             }
+
             next()
         }
     },
@@ -46,13 +47,15 @@ module.exports = {
     authNumGenerator: () => {
         return (req, res, next) => {
             req.authNum = utils.createRandomString(std.authNum.length)
+
             next()
         }
     },
 
     encryption: () => {
         return (req, res, next) => {
-           req.encryptionNum = utils.encryption(req.authNum)
+            req.encryptionNum = utils.encryption(req.authNum)
+
             next()
         }
     },
@@ -60,26 +63,35 @@ module.exports = {
     syncDB: (db) => {
         return (req, res, next) => {
             let body = req.body
-            let idPk = db.pk.authPk
-            let schemaAuth = db.schema.auth
+            let authPk = db.pk.authPk
+            let auth = db.schema.auth
 
-            for(let pk in schemaAuth){
-                let data = schemaAuth[pk]
-                if(data.type === body.type && data.key === body.key){
-                    idPk = pk
+            let bAuthPk = false
+            for (let pk in auth) {
+                if (auth[pk].type === body.type && auth.key === body.key) {
+                    bAuthPk = true
+                    auth[pk] = {
+                        authNum: req.encryptionNum,
+                        type: body.type,
+                        key: body.key,
+                        createdAt: Date.now()  //유닉스 타임
+                    }
                     break
                 }
             }
 
-            if (idPk === schemaAuth.pk) {
-                idPk = idPk++
+            if (bAuthPk = false) {
+                auth[pk] = {
+                    authNum: req.encryptionNum,
+                    type: body.type,
+                    key: body.key,
+                    createdAt: Date.now()  //유닉스 타임
+                }
+                authPk++
+            } else {
+                console.log('error')
             }
-            schemaAuth[idPk] = {
-                authNum: req.encryptionNum,
-                type: body.type,
-                key: body.key,
-                createdAt: Date.now()
-            }
+
             next()
         }
     },
