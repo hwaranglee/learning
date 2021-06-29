@@ -1,40 +1,34 @@
-const express = require('express')
-const bodyParser = require('body-parser')
+const express = require("express");
+const bodyParser = require("body-parser");
 
-const utils = require('./utils')
-let db = require('./db')
+const utils = require("./utils");
+let db = require("./db");
 
-const authNumsPost = require('./apis/account/auth-nums/post')
-const authNumTokensPost = require('./apis/account/auth-num-tokens/post')
+const accountRouter = require("./apis/account");
+const { strings } = require("./constants");
 
 // settings
-const app = express()
-const port = 3000
+const app = express();
+const port = 3000;
 
 // global middlewares
-app.use(bodyParser.urlencoded({
-    extended: true
-}));
+app.use(bodyParser.json());
 
 // listen
 app.listen(port, () => {
-    console.log(`Example app listening at http://localhost:${port}`)
-})
+  console.log(`Example app listening at http://localhost:${port}`);
+});
 
 // apis
-app.post('/auth-nums',
-    authNumsPost.validation(),
-    authNumsPost.authNumGenerator(),
-    authNumsPost.encryption(),
-    authNumsPost.syncDB(db),
-    authNumsPost.responder()
-)
+// ? / account
+app.use("/account", accountRouter);
 
-app.post('/auth-num-tokens',
-    authNumTokensPost.validation(),
-    authNumTokensPost.encryption(),
-    authNumTokensPost.validationAutNum(db),
-    authNumTokensPost.tokenGenerator(),
-    authNumTokensPost.syncDB(db),
-    authNumTokensPost.responder()
-)
+// ! 404
+app.use((req, res, next) => {
+  res.status(404).send("404 NOT FOUND");
+});
+
+// ! 500
+app.use((error, req, res, next) => {
+  res.status(500).json({ response: strings.RESPONSE_ERROR, error });
+});
