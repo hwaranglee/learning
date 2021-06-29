@@ -13,6 +13,8 @@ let db = {
     authNum: {
       "01041297219": {
         createdAt: 1624899069499,
+        expireAt: 1624899069499,
+        type: "phone",
         authNumEnc:
           "JZHZa0g4rLrT9InL8k38rGZvFqOXGwEup7Lpc4USWcJy9V7umVpcKTJgrAOzdbaW8axIVzLf7aJBLJv6VdkRig==",
       },

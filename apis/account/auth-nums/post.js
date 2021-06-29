@@ -4,18 +4,34 @@ const std = require("../../../standards");
 
 const { encryption, generateRandomNum } = require("../../../utils");
 const { strings } = require("../../../constants");
+
 const authNumStd = std.authNum;
+const emailType = std.authNum.authNumTypeEmail;
+const phoneType = std.authNum.authNumTypePhone;
+const expiredMinute = std.authNum.expiredMinute;
 
 module.exports = {
   validation: () => {
     const validChain = [
-      body("phoneNo").isMobilePhone("any").isLength({ min: 11, max: 11 }),
+      body("type")
+        .exists()
+        .isIn([emailType, phoneType])
+        .withMessage(strings.TYPE_ERROR),
+      body("phoneNo")
+        .if(body("type").isIn([phoneType]))
+        .isMobilePhone("any")
+        .isLength({ min: 11, max: 11 })
+        .withMessage(strings.PHONE_NO_ERROR_MSG),
+      body("email")
+        .if(body("type").isIn([emailType]))
+        .isEmail()
+        .withMessage(strings.EMAIL_ERROR_MSG),
       (req, res, next) => {
         const { errors } = validationResult(req);
         if (errors.length !== 0) {
           return res.status(400).json({
             response: strings.RESPONSE_FAIL,
-            msg: strings.PHONE_NO_ERROR_MSG,
+            msg: strings.RESPONSE_ERROR,
             errors: errors,
           });
         }
@@ -27,7 +43,7 @@ module.exports = {
 
   authNumGenerator: () => {
     return (req, res, next) => {
-      req.authNum = generateRandomNum(authNumStd.length);
+      req.authNum = generateRandomNum(authNumStd.length).toString();
       next();
     };
   },
@@ -41,12 +57,18 @@ module.exports = {
 
   syncDB: (db) => {
     return (req, res, next) => {
-      const { authNumEnc } = req;
-      db.schema.authNum[req.body.phoneNo] = {
-        createdAt: Date.now(),
+      const { authNumEnc, body } = req;
+      const { type } = body;
+      const key = getKeyByType(type, body);
+      const createdAt = Date.now();
+      const expireAt = createdAt + expiredMinute * 60000;
+      db.schema.authNum[key] = {
+        createdAt,
+        expireAt,
+        type,
         authNumEnc,
       };
-      console.log(db);
+      console.log(db.schema.authNum);
       next();
     };
   },
@@ -61,3 +83,12 @@ module.exports = {
     };
   },
 };
+
+function getKeyByType(type, body) {
+  if (type === emailType) {
+    return body.email;
+  }
+  if (type === phoneType) {
+    return body.phoneNo;
+  }
+}

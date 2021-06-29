@@ -1,8 +1,8 @@
 const crypto = require("crypto");
 
 module.exports = {
-  generateRandomNum: (numLen) => {
-    return `${Math.round(Math.random() * Math.pow(10, numLen))}`;
+  generateRandomNum: (length) => {
+    return Math.round(Math.random() * Math.pow(10, length));
   },
   createRandomString: (length) => {
     var result = "";

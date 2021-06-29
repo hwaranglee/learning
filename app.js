@@ -1,25 +1,22 @@
 const express = require("express");
 const bodyParser = require("body-parser");
 
-const utils = require("./utils");
-let db = require("./db");
-
 const accountRouter = require("./apis/account");
 const { strings } = require("./constants");
 
-// settings
+// ? settings
 const app = express();
 const port = 3000;
 
-// global middlewares
+// ? global middlewares
 app.use(bodyParser.json());
 
-// listen
+// ? listen
 app.listen(port, () => {
   console.log(`Example app listening at http://localhost:${port}`);
 });
 
-// apis
+// ? apis
 // ? / account
 app.use("/account", accountRouter);
 
