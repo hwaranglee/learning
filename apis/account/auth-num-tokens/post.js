@@ -77,7 +77,7 @@ module.exports = {
                 if (auth[authPk].type === body.type && auth[authPk].key === body.key) {
                     bExistence = true
 
-                    if (requestedAt - auth[authPk].createdAt > 3 * 60 * 1000) {
+                    if (requestedAt - auth[authPk].createdAt > authNumStd.expiredMinute * 60 * 1000) {
                         res.status(400)
                         return res.json({code: "400_6"})
                     }
@@ -106,8 +106,8 @@ module.exports = {
     tokenGenerator: () => {
         return (req, res, next) => {
             // JWT 생성
-            req.token = jwt.sign({authPk: req.authPk}, SECRET_KEY, {expiresIn: '1h'})
-
+            req.token = jwt.sign({authPk: req.authPk}, SECRET_KEY, {expiresIn: `${authNumStd.tokenExpiredMinute}m`})
+            
             next()
         }
     },
