@@ -1,5 +1,6 @@
 const utils = require('../../../utils')
 const std = require('../../../standards')
+
 const authNumStd = std.authNum
 
 module.exports = {
@@ -66,10 +67,10 @@ module.exports = {
             let authPk = db.pk.authPk
             let auth = db.schema.auth
 
-            let bAuthPk = false
+            let bAuthPk = False
             for (let pk in auth) {
                 if (auth[pk].type === body.type && auth.key === body.key) {
-                    bAuthPk = true
+                    bAuthPk = True
                     auth[pk] = {
                         authNum: req.encryptionNum,
                         type: body.type,
@@ -80,7 +81,7 @@ module.exports = {
                 }
             }
 
-            if (bAuthPk = false) {
+            if (bAuthPk = False) {
                 auth[pk] = {
                     authNum: req.encryptionNum,
                     type: body.type,

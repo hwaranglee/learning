@@ -33,7 +33,7 @@ app.post('/auth-nums',
 app.post('/auth-num-tokens',
     authNumTokensPost.validation(),
     authNumTokensPost.encryption(),
-    authNumTokensPost.validationAutNum(db),
+    authNumTokensPost.validationAuthNum(db),
     authNumTokensPost.tokenGenerator(),
     authNumTokensPost.syncDB(db),
     authNumTokensPost.responder()
