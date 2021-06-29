@@ -8,13 +8,13 @@ module.exports = {
             let body = req.body
             let authNum = body.authNum
 
-            if (body.type === undefined || body.key === undefined || authNum === undefined){
+            if (body.type === undefined || body.key === undefined || authNum === undefined) {
                 return res.status(400).json({code: "400_1"})
             }
-            if (body.type !== authNumStd.authNumTypePhone && body.type !== authNumStd.authNumTypeEmail){
+            if (body.type !== authNumStd.authNumTypePhone && body.type !== authNumStd.authNumTypeEmail) {
                 return res.status(400).json({code: "400_2"})
             }
-            if (typeof authNum !== "string" || authNum.length !== authNumStd.length){
+            if (typeof authNum !== "string" || authNum.length !== authNumStd.length) {
                 return res.status(400).json({code: "400_5"})
             }
 
