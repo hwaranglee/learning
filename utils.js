@@ -15,3 +15,5 @@ module.exports = {
         return crypto.createHash('sha512').update(str).digest('base64');
     }
 }
+
+

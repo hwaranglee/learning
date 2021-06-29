@@ -26,7 +26,7 @@ module.exports = {
             }
 
             if (body.type === authNumStd.authNumTypePhone) {
-                let regExp = /^\d{3}-\d{3,4}-\d{4}$/;
+                let regExp = /^\d{3}-\d{3,4}-\d{4}$/
                 if (!regExp.test(body.key)) {
                     res.status(400)
                     return res.json({code: "400_4"})
@@ -65,15 +65,15 @@ module.exports = {
             let bExistence = false
             // auth = {
             //     1: {
-            //         authNum: '',
+            //         authNumEncrypt: '',
             //         key: ''
             //     }
             // }
             for (let authPk in auth) {
                 // type 까지
-                if (auth[authPk].key === body.key && auth[authPk].type === body.type) {
+                if (auth[authPk].type === body.type && auth[authPk].key === body.key) {
                     bExistence = true
-                    auth[authPk].authNum = req.authNum
+                    auth[authPk].authNumEncrypt = req.authNumEncrypt
                     auth[authPk].createdAt = Date.now()
                     break
                 }
@@ -81,7 +81,7 @@ module.exports = {
 
             if (!bExistence) {
                 auth[pk.authPk] = {
-                    authNum: req.authNum,
+                    authNumEncrypt: req.authNumEncrypt,
                     key: body.key,
                     type: body.type,
                     createdAt: new Date()

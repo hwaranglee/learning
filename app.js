@@ -35,6 +35,7 @@ app.post('/auth-num-tokens',
     authNumTokensPost.encryption(),
     authNumTokensPost.validationAutNum(db),
     authNumTokensPost.tokenGenerator(),
-    authNumTokensPost.syncDB(db),
+    // JWT를 사용하였기 때문에 db에 token을 저장하지 않는다.
+    // authNumTokensPost.syncDB(db),
     authNumTokensPost.responder()
 )
