@@ -42,14 +42,14 @@ module.exports = {
             //todo: db안에 인증번호가 없을때와 있긴한데 틀릴때를 구분해줘야할까
 
             for (let authPk in schema){
-                if(schema[authPk].type === body.type && schema[authPk].key === body.key){
-                    if ([now - schema[authPk].createdAt] / 60000 > minute){
+                if (schema[authPk].type === body.type && schema[authPk].key === body.key) {
+                    if ([now - schema[authPk].createdAt] / 60000 > minute) {
                         return res.status(400).json({code: "400_6"})
                     }
-                    if(schema[authPk].encryptNum === undefined){
+                    if(schema[authPk].encryptNum === undefined) {
                         return res.status(404).json({code: "404_1"})
                     }
-                    if (schema[authPk].encryptNum !== AuthNum){
+                    if (schema[authPk].encryptNum !== AuthNum) {
                         return res.status(401).json({code: "401_1"})
                     }else{
                         bAuthNum = true
@@ -59,9 +59,9 @@ module.exports = {
             }
 
             if (bAuthNum === false){
-                if (body.type === authNumStd.authNumTypePhone){
+                if (body.type === authNumStd.authNumTypePhone) {
                     return res.status(400).json({code: "400_4"})
-                }else if (body.type === authNumStd.authNumTypeEmail){
+                }else if (body.type === authNumStd.authNumTypeEmail) {
                     return res.status(400).json({code: "400_3"})
                 }
             }
@@ -87,7 +87,7 @@ module.exports = {
             let createdAt = Date.now()
             let bToken = false
 
-            for (let pk in tokenSchema){
+            for (let pk in tokenSchema) {
                 if(body.type === tokenSchema[pk].type && body.key === tokenSchema[pk].key){
                     tokenSchema[pk].tokenNum = tokenNum
                     tokenSchema[pk].createdAt = createdAt
@@ -96,7 +96,7 @@ module.exports = {
                 }
             }
 
-            if(bToken === false){
+            if (bToken === false) {
                 tokenSchema[tokenPk] = {
                     type: body.type,
                     key: body.key,
