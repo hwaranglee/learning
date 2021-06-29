@@ -7,14 +7,14 @@ module.exports = {
         return (req, res, next) => {
             let body = req.body
 
+            if (body.type === undefined || body.key === undefined) {
+                res.status(400)
+                return res.json({code: "400_2"})
+            }
+
             if (body.type !== authNumStd.authNumTypeEmail || body.type !== authNumStd.authNumTypePhone) {
                 res.status(400)
                 return res.json({code: "400_1"})
-            }
-
-            if (!body.key) {
-                res.status(400)
-                return res.json({code: "400_2"})
             }
 
             if (body.type === authNumStd.authNumTypeEmail) {
@@ -27,14 +27,14 @@ module.exports = {
 
             if (body.type === authNumStd.authNumTypePhone) {
                 let regExp = /^\d{3}-\d{3,4}-\d{4}$/;
-                if(!regExp.test(body.key)) {
+                if (!regExp.test(body.key)) {
                     res.status(400)
                     return res.json({code: "400_4"})
                 }
             } else {
                 console.log('error')
             }
-            // 개발자에게 메일/문자 보내기
+            // todo 개발자에게 메일/문자 보내기
 
             next()
         }
@@ -51,7 +51,7 @@ module.exports = {
     encryption: () => {
         return (req, res, next) => {
             req.authNumEncrypt = utils.encryption(req.authNum)
-            
+
             next()
         }
     },
@@ -62,7 +62,7 @@ module.exports = {
             let auth = db.schema.auth
             let pk = db.pk
 
-            let existenceCheck = 0
+            let bExistence = false
             // auth = {
             //     1: {
             //         authNum: '',
@@ -71,15 +71,15 @@ module.exports = {
             // }
             for (let authPk in auth) {
                 // type 까지
-                if (auth.authPk.key === body.key && auth.authPk.type === body.type) {
-                    existenceCheck = 1
-                    auth.authPk.authNum = req.authNum
-                    auth.authPk.createdAt = new Date()
+                if (auth[authPk].key === body.key && auth[authPk].type === body.type) {
+                    bExistence = true
+                    auth[authPk].authNum = req.authNum
+                    auth[authPk].createdAt = Date.now()
                     break
                 }
             }
 
-            if (existenceCheck === 0) {
+            if (!bExistence) {
                 auth[pk.authPk] = {
                     authNum: req.authNum,
                     key: body.key,

@@ -4,7 +4,7 @@ const std = require('../../../standards')
 module.exports = {
     validation: () => {
         return (req, res, next) => {
-            
+
 
             next()
         }
@@ -18,7 +18,7 @@ module.exports = {
 
     validationAutNum: (db) => {
         return (req, res, next) => {
-            
+
 
             next()
         }
@@ -32,7 +32,7 @@ module.exports = {
 
     syncDB: (db) => {
         return (req, res, next) => {
-          
+
 
             next()
         }
