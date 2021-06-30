@@ -63,16 +63,13 @@ module.exports = {
       const createdAt = Date.now();
       const expireAt = createdAt + expiredMinute * 60000;
 
-      if (!db.schema.authNum[key]) {
-        db.pk.authPk++;
-      }
       db.schema.authNum[key] = {
-        _id: db.pk.authPk,
         createdAt,
         expireAt,
         type,
         authNumEnc,
       };
+
       console.log(db.schema.authNum);
       next();
     };
