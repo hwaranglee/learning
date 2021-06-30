@@ -12,6 +12,7 @@ let db = {
   schema: {
     authNum: {
       "01041297219": {
+        _id: 1,
         createdAt: 1624899069499,
         expireAt: 1624899069499,
         type: "phone",

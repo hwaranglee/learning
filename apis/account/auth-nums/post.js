@@ -62,7 +62,12 @@ module.exports = {
       const key = getKeyByType(type, body);
       const createdAt = Date.now();
       const expireAt = createdAt + expiredMinute * 60000;
+
+      if (!db.schema.authNum[key]) {
+        db.pk.authPk++;
+      }
       db.schema.authNum[key] = {
+        _id: db.pk.authPk,
         createdAt,
         expireAt,
         type,
