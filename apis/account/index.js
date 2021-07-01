@@ -23,6 +23,5 @@ router.post(
   authNumTokensPost.encryption(),
   authNumTokensPost.validationAutNum(db),
   authNumTokensPost.tokenGenerator(),
-  authNumTokensPost.syncDB(db),
   authNumTokensPost.responder()
 );
