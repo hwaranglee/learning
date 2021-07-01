@@ -11,7 +11,7 @@ module.exports = {
         PASSWORD_LENGTH_MSG: "8자리 이상 입력해 주세요.",
         RePASSWORD_ERROR_MSG: "처음 비밀번호와 다릅니다.",
         NAME_ERROR_MSG: "이름을 다시 입력해주세요.",
-        RESPONSE_FAIL: "응답이 없습니다.",
-        RESPONSE_ERROR: "error"
+        RESPONSE_FAIL: "응답 실패",
+        RESPONSE_ERROR: "응답이 없습니다."
     }
 }
