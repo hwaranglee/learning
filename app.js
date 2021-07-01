@@ -9,14 +9,13 @@ const authNumsPost = require('./apis/account/auth-nums/post')
 const authNumTokensPost = require('./apis/account/auth-num-tokens/post')
 const signupPost = require('./apis/account/signup/post')
 const accountRouter = require('./apis/account/index')
-// ! check
-// const accountRouter = require('./apis/account')
 
 // settings
 const app = express()
 const port = 3000
 
 // global middlewares
+app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({
     extended: true
 }))
@@ -25,6 +24,12 @@ app.use(bodyParser.urlencoded({
 app.listen(port, () => {
     console.log(`Example app listening at http://localhost:${port}`)
 })
+
+app.post('/postmanTest',
+    (req, res) => {
+        res.json({msg: 'HELLO'})
+    }
+)
 
 app.use('/account', accountRouter)
 // apis

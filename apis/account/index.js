@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 
 const authNumsPost = require('./auth-nums/post')
-const authNumTokensPost = require('./auth-num-tokens')
+const authNumTokensPost = require('./auth-num-tokens/post')
 const signupPost = require('./signup/post')
 const db = require('../../db/index')
 

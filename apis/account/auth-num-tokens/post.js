@@ -15,7 +15,7 @@ module.exports = {
                 return res.json({code: "400_2"})
             }
 
-            if (body.type !== authNumStd.authNumTypeEmail || body.type !== authNumStd.authNumTypePhone) {
+            if (body.type !== authNumStd.authNumTypeEmail && body.type !== authNumStd.authNumTypePhone) {
                 res.status(400)
                 return res.json({code: "400_1"})
             }
@@ -36,19 +36,10 @@ module.exports = {
                 }
             }
 
-            // todo 정규표현식으로 string을 걸러내는 게 있을 텐데...
-            // function test (ele) {
-            //     if (!regExp.test(ele)) {
-            //         return console.log(1)
-            //     }
-            //     console.log(typeof ele)
-            // }
             let regExp = /^[0-9A-Za-z]{6}$/
             if (!regExp.test(body.authNum) || typeof body.authNum !== "string") {
                 res.status(400)
                 return res.json({code: "400_5"})
-            } else {
-                return console.log('error')
             }
 
             next()
@@ -71,8 +62,11 @@ module.exports = {
             let auth = db.schema.auth
             let requestedAt = Date.now()
 
+            // ! check
+            // console.log("auth: ", auth)
+            // console.log("body: ", body)
+
             let bExistence = false
-            // todo for문과 if문의 중첩이라...
             for (let authPk in auth) {
                 if (auth[authPk].type === body.type && auth[authPk].key === body.key) {
                     bExistence = true
@@ -95,8 +89,6 @@ module.exports = {
             if (!bExistence) {
                 res.status(404)
                 return res.json({code: "404_1"})
-            } else {
-                return console.log("error")
             }
 
             next()
