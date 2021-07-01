@@ -71,7 +71,7 @@ module.exports = {
             let auth = db.schema.auth
             let isSearched = false
             let searchedPk = 1
-            
+
             for (let pk in auth) {
                 let data = auth[pk]
 
@@ -126,7 +126,9 @@ module.exports = {
 
             //todo 토큰값이 중복되면...?
             //todo 토큰은 로그인할때마다 새로 발행되는건가요?
+
             authToken[encryptedToken] = {
+                token: encryptedToken,
                 key: body.key,
                 type: body.type,
                 createdAt: Date.now()   //db에 token 저장

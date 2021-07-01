@@ -27,7 +27,7 @@ module.exports = {
                 regExp = /^[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*.[a-zA-Z]{2,3}$/i;
                 code = '400_3'
             } else {
-                console.log("type error입니다.")
+                console.log("type error")
             }
 
             if (regExp !== null) {
@@ -38,7 +38,7 @@ module.exports = {
                     return res.json({code: code})
                 }
             } else {
-                console.log("type error입니다.")
+                console.log("type error")
             }
 
             next()

@@ -6,6 +6,7 @@ let db = require('./db')
 
 const authNumsPost = require('./apis/account/auth-nums/post')
 const authNumTokensPost = require('./apis/account/auth-num-tokens/post')
+const privacyPost = require('./apis/account/privacy/post')
 
 // settings
 const app = express()
@@ -38,3 +39,12 @@ app.post('/auth-num-tokens',
     authNumTokensPost.syncDB(db),
     authNumTokensPost.responder()
 )
+
+app.post('/privacy',
+    privacyPost.validation(),
+    privacyPost.tokenEncryption(),
+    privacyPost.validationToken(db),
+    privacyPost.passwordEncryption(),
+    privacyPost.syncDB(db),
+    privacyPost.responder()
+    )

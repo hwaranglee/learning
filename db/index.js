@@ -18,7 +18,7 @@ let db = {
         optionalTerms: {},
         version: {},
         extinctUser: {}
-    }
+    },
 }
 
 module.exports = db
