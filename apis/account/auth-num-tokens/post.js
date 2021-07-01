@@ -107,7 +107,7 @@ module.exports = {
         return (req, res, next) => {
             // JWT 생성
             req.token = jwt.sign({authPk: req.authPk}, SECRET_KEY, {expiresIn: `${authNumStd.tokenExpiredMinute}m`})
-            
+
             next()
         }
     },
