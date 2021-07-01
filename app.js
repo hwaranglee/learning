@@ -41,7 +41,7 @@ app.post('/auth-num-tokens',
 )
 
 app.post('/privacy',
-    privacyPost.validation(),
+    privacyPost.validation(db),
     privacyPost.tokenEncryption(),
     privacyPost.validationToken(db),
     privacyPost.passwordEncryption(),

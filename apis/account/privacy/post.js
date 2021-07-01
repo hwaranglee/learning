@@ -4,6 +4,7 @@ const utils = require('../../../utils')
 const std = require('../../../standards')
 const strings = require('../../../strings')
 
+
 const KO = std.country.KO
 const US = std.country.US
 const ko = std.language.ko
@@ -14,7 +15,7 @@ const signUp = strings.signUp
 
 module.exports = {
     // 유저가 아이디, 비번, 이름, 전화번호, 국가, 언어 등의 기본정보 입력
-    validation: () => {
+    validation: (db) => {
         let validChain = [
             body("id")
                 .exists()
@@ -37,7 +38,8 @@ module.exports = {
                 .isLength({ min: 1, max: 30 })
                 .withMessage(signUp.NAME_ERROR_MSG),
             body("email")
-                .exists().isEmail()
+                .exists()
+                .isEmail()
                 .isLength({ min: 5, max: 30 })
                 .withMessage(signUp.EMAIL_NO_ERROR_MSG),
             // todo 이메일 중복 체크
@@ -53,24 +55,29 @@ module.exports = {
             body("language")
                 .exists()
                 .if(body("language").isIn([ko, en]))
-                .withMessage(signUp.LANGUAGE_ERROR_MSG),
+                .withMessage(signUp.LANGUAGE_ERROR_MSG)
         ]
 
-        //const user = db.schema.user
-        //body('email', 'Invalid email').exists().isEmail().custom(user.email) => {
-        //    return new Promise((resolve, reject) => {
-        //       user.findOne({ where: { email: user } })
-        //            .then(emailExist => {
-        //                if(emailExist !== null){
-        //                    reject(new Error(signUp.EMAIL_ERROR_MSG))
-        //                }else{
-        //                    resolve(true)
-        //                }
-        //            })
-        //    })
-        //}
+        return (req, res, next, resolve, reject) => {
+            const user = db.schema.user
+            user({ where: { email: "email" } })
+                .then(emailExist => {
+                    if(emailExist !== null){
+                        reject(new Error(signUp.EMAIL_ERROR_MSG))
+                    }else{
+                        resolve(true)
+                    }
+                })
 
-        return (req, res, next) => {
+            user({ where: { id: "id" } })
+                .then(emailExist => {
+                    if(emailExist !== null){
+                        reject(new Error(signUp.ID_REPEAT_MSG))
+                    }else{
+                        resolve(true)
+                    }
+                })
+
             const {errors} = validationResult(req)
             if (errors.length !== 0) {
                 return res.status(400).json({
