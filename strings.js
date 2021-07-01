@@ -2,7 +2,8 @@ module.exports = {
     signUp:{
         TYPE_ERROR: "type error",
         PHONE_NO_ERROR_MSG: "잘못된 번호입니다.",
-        EMAIL_ERROR_MSG: "잘못된 이메일 입니다.",
+        EMAIL_NO_ERROR_MSG: "잘못된 이메일 입니다.",
+        EMAIL_ERROR_MSG: "Email already exists."
         COUNTRY_ERROR_MSG: "해당 국가를 다시 입력해주세요.",
         LANGUAGE_ERROR_MSG: "언어를 다시 입력해주세요.",
         ID_ERROR_MSG: "잘못된 아이디 입니다.",

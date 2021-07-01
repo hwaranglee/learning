@@ -30,18 +30,16 @@ module.exports = {
             body("rePassword")
                 .exists()
                 .isStrongPassword()
-                // todo 처음 password와 다른 password 입력했을 때 오류 나는 것 문법 모르곘습니다.
-                .if(!body("Password"))
+                .equals("password")
                 .withMessage(signUp.RePASSWORD_ERROR_MSG),
             body("name")
                 .exists()
                 .isLength({ min: 1, max: 30 })
                 .withMessage(signUp.NAME_ERROR_MSG),
             body("email")
-                .exists()
-                .isEmail()
+                .exists().isEmail()
                 .isLength({ min: 5, max: 30 })
-                .withMessage(signUp.EMAIL_ERROR_MSG),
+                .withMessage(signUp.EMAIL_NO_ERROR_MSG),
             // todo 이메일 중복 체크
             body("phone")
                 .exists()
@@ -57,6 +55,21 @@ module.exports = {
                 .if(body("language").isIn([ko, en]))
                 .withMessage(signUp.LANGUAGE_ERROR_MSG),
         ]
+
+        //const user = db.schema.user
+        //body('email', 'Invalid email').exists().isEmail().custom(user.email) => {
+        //    return new Promise((resolve, reject) => {
+        //       user.findOne({ where: { email: user } })
+        //            .then(emailExist => {
+        //                if(emailExist !== null){
+        //                    reject(new Error(signUp.EMAIL_ERROR_MSG))
+        //                }else{
+        //                    resolve(true)
+        //                }
+        //            })
+        //    })
+        //}
+
         return (req, res, next) => {
             const {errors} = validationResult(req)
             if (errors.length !== 0) {
@@ -66,6 +79,7 @@ module.exports = {
                     errors: errors,
                 })
             }
+
             // 토큰이 헤더에 담겨있는 지 확인
             let token = req.headers.token
             if (!token) {
@@ -120,7 +134,7 @@ module.exports = {
             let optionalTerms = db.schema.optionalTerms
 
             // 회원가입 정보 저장
-            // 원래 하고 싶었던건.. db에 저장된 authToken 안에 있는 값들을 가지고 와서 user에 추가하고 싶었는데..
+            // 원래 하고 싶었던건.. db에 저장된 authToken 안에 있는 값들을 가지고 와서 user 추가하고 싶었는데..
             user[encryptedPassword] = {
                 id: body.id,
                 password: encryptedPassword,
