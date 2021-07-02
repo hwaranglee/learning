@@ -4,6 +4,7 @@ const router = express.Router();
 const authNumsPost = require('./auth-nums/post')
 const authNumTokensPost = require('./auth-num-tokens/post')
 const signupPost = require('./signup/post')
+const validatorPost = require('./validator/post')
 const db = require('../../db/index')
 
 module.exports = router;
@@ -33,4 +34,9 @@ router.post('/signup',
     signupPost.syncDBUser(db),
     signupPost.syncDBOptionalTerms(db),
     signupPost.responder()
+)
+
+router.post('/validator',
+    validatorPost.validation(),
+    validatorPost.responder()
 )
