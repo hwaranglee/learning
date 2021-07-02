@@ -55,48 +55,46 @@ module.exports = {
             body("language")
                 .exists()
                 .if(body("language").isIn([ko, en]))
-                .withMessage(signUp.LANGUAGE_ERROR_MSG)
+                .withMessage(signUp.LANGUAGE_ERROR_MSG),
+            (req, res, next, resolve, reject) => {
+                const user = db.schema.user
+                user({where: {email: "email"}})
+                    .then(emailExist => {
+                        if (emailExist !== null) {
+                            reject(new Error(signUp.EMAIL_ERROR_MSG))
+                        } else {
+                            resolve(true)
+                        }
+                    })
+
+                user({where: {id: "id"}})
+                    .then(emailExist => {
+                        if (emailExist !== null) {
+                            reject(new Error(signUp.ID_REPEAT_MSG))
+                        } else {
+                            resolve(true)
+                        }
+                    })
+
+                const {errors} = validationResult(req)
+                if (errors.length !== 0) {
+                    return res.status(400).json({
+                        response: signUp.RESPONSE_FAIL,
+                        msg: signUp.RESPONSE_ERROR,
+                        errors: errors,
+                    })
+                }
+
+                // 토큰이 헤더에 담겨있는 지 확인
+                let token = req.headers.token
+                if (!token) {
+                    res.status(401)
+                    return res.json({code: "400_7"})
+                }
+                next()
+            }
         ]
-
-        return (req, res, next, resolve, reject) => {
-            const user = db.schema.user
-            user({ where: { email: "email" } })
-                .then(emailExist => {
-                    if(emailExist !== null){
-                        reject(new Error(signUp.EMAIL_ERROR_MSG))
-                    }else{
-                        resolve(true)
-                    }
-                })
-
-            user({ where: { id: "id" } })
-                .then(emailExist => {
-                    if(emailExist !== null){
-                        reject(new Error(signUp.ID_REPEAT_MSG))
-                    }else{
-                        resolve(true)
-                    }
-                })
-
-            const {errors} = validationResult(req)
-            if (errors.length !== 0) {
-                return res.status(400).json({
-                    response: signUp.RESPONSE_FAIL,
-                    msg: signUp.RESPONSE_ERROR,
-                    errors: errors,
-                })
-            }
-
-            // 토큰이 헤더에 담겨있는 지 확인
-            let token = req.headers.token
-            if (!token) {
-                res.status(401)
-                return res.json({code: "400_7"})
-            }
-
-            next()
         return [...validChain]
-        }
     },
 
     // 헤더에 저장된 토큰을 암호화
