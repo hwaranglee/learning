@@ -34,5 +34,5 @@ app.use((req, res, next) => {
 
 // ! 500
 app.use((error, req, res, next) => {
-  res.status(500).json({ response: strings.RESPONSE_ERROR, error, is: "?" });
+  res.status(500).json({ response: strings.RESPONSE_ERROR, error });
 });
