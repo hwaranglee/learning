@@ -65,8 +65,6 @@ module.exports = {
         encryptionAuthNum
       }
 
-      console.log(db.schema.auth)
-
       next()
     }
   },

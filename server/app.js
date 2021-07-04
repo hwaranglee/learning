@@ -1,10 +1,11 @@
 const express = require('express')
+const cors = require('cors')
 const bodyParser = require('body-parser')
-// router
-const authRouter = require('./routes/auth')
+const authRouter = require('./apis')
 
 const app = express()
-const port = 80
+app.use(cors())
+const port = 8080
 
 // global middlewares
 app.use(bodyParser.json())
@@ -13,7 +14,7 @@ app.use(bodyParser.urlencoded({
   extended: true
 }))
 
-app.use('/auth', authRouter)
+app.use('/api', authRouter)
 
 // listen
 app.listen(port, () => {

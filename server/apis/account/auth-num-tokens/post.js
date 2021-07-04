@@ -115,6 +115,7 @@ module.exports = {
     return (req, res) => {
       res.status(200).json({
         res: strings.RES_SUCCESS,
+        msg: strings.AUTH_SUCCESS,
         token: req.token
       })
     }

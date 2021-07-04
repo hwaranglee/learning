@@ -1,8 +1,8 @@
+import Auth from './components/auth'
+
 function App() {
   return (
-    <div>
-      TEST
-    </div>
+    <Auth/>
   )
 }
 
