@@ -1,16 +1,15 @@
 const { check, body, validationResult } = require('express-validator')
-
 const { createRandomString, encryption } = require('../../../utils')
-const std = require('../../../standards')
-const authNumStd = std.authNum
-const phoneType = authNumStd.authNumTypePhone
-const emailType = authNumStd.authNumTypeEmail
-const expiredMinute = authNumStd.expiredMinute
+const { strings } = require('../../../constants/strings')
+const { authNum } = require('../../../standards')
+const { authNumTypePhone: phoneType, authNumTypeEmail: emailType, length, expiredMinute } = authNum
 const codes = require('../../../codes.json')
 
 module.exports = {
   validation: () => {
-    const chain = [
+    const res = [
+      // TODO 유효성 검사 추가
+      check('type', codes['400_2']).not().isEmpty(),
       check('type')
         .exists()
         .isIn([phoneType, emailType])
@@ -33,25 +32,37 @@ module.exports = {
       }
     ]
 
-    return [...chain]
+    return [...res]
   },
 
   authNumGenerator: () => {
     return (req, res, next) => {
-      req.authNum = createRandomString(authNumStd.length).toString();
+      // 인증번호
+      req.authNum = createRandomString(length).toString()
       next()
     }
   },
 
   encryption: () => {
     return (req, res, next) => {
-      console.log(req.authNum)
+      req.encryptionAuthNum = encryption(req.authNum)
       next()
     }
   },
 
   syncDB: (db) => {
     return (req, res, next) => {
+      const { body, encryptionAuthNum } = req
+      const type = body?.type
+
+      const createdAt = new Date()
+
+      // pk ??
+      db.schema.auth[type] = {
+        createdAt: new Date(),
+        expiredMinute: createdAt + expiredMinute * 60000,
+        encryptionAuthNum
+      }
 
       next()
     }
@@ -59,7 +70,12 @@ module.exports = {
 
   responder: () => {
     return (req, res) => {
-      res.json({ authNum: req.authNum })
+      res.json({
+        status: 200,
+        res: strings.RES_SUCCESS,
+        msg: strings.SEND_AUTH,
+        authNum: req.authNum,
+      })
     }
   }
 }
