@@ -1,11 +1,13 @@
 const express = require('express');
 const router = express.Router();
 
+const db = require('../../db/index')
+
 const authNumsPost = require('./auth-nums/post')
 const authNumTokensPost = require('./auth-num-tokens/post')
-const signupPost = require('./signup/post')
+const accountsPost = require('./accounts/post')
+// validator 연습용
 const validatorPost = require('./validator/post')
-const db = require('../../db/index')
 
 module.exports = router;
 
@@ -27,15 +29,16 @@ router.post('/auth-num-tokens',
     authNumTokensPost.responder()
 )
 
-router.post('/signup',
-    signupPost.validation(),
-    signupPost.tokenVerifier(),
-    signupPost.passwordEncryption(), // user 별로 다른 salt 값을 갖도록
-    signupPost.syncDBUser(db),
-    signupPost.syncDBOptionalTerms(db),
-    signupPost.responder()
+router.post('/accounts',
+    accountsPost.validation(),
+    accountsPost.tokenVerifier(),
+    accountsPost.passwordEncryption(), // user 별로 다른 salt 값을 갖도록
+    accountsPost.syncDBUser(db),
+    accountsPost.syncDBOptionalTerms(db),
+    accountsPost.responder()
 )
 
+// validator 연습용
 router.post('/validator',
     validatorPost.validation(),
     validatorPost.responder()

@@ -2,12 +2,12 @@ const express = require('express')
 const bodyParser = require('body-parser')
 require('dotenv').config()
 
-const utils = require('./utils')
+// const utils = require('./utils')
 // let db = require('./db')
 
-const authNumsPost = require('./apis/account/auth-nums/post')
-const authNumTokensPost = require('./apis/account/auth-num-tokens/post')
-const signupPost = require('./apis/account/signup/post')
+// const authNumsPost = require('./apis/account/auth-nums/post')
+// const authNumTokensPost = require('./apis/account/auth-num-tokens/post')
+// const signupPost = require('./apis/account/accounts/post')
 const accountRouter = require('./apis/account/index')
 
 // settings
@@ -24,12 +24,6 @@ app.use(bodyParser.urlencoded({
 app.listen(port, () => {
     console.log(`Example app listening at http://localhost:${port}`)
 })
-
-app.post('/postmanTest',
-    (req, res) => {
-        res.json({msg: 'HELLO'})
-    }
-)
 
 app.use('/account', accountRouter)
 // apis
@@ -51,7 +45,7 @@ app.use('/account', accountRouter)
 //     authNumTokensPost.responder()
 // )
 //
-// app.post('/signup',
+// app.post('/accounts',
 //     signupPost.validation(),
 //     signupPost.tokenVerifier(),
 //     signupPost.passwordEncryption(), // user 별로 다른 salt 값을 갖도록

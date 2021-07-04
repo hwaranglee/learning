@@ -1,12 +1,9 @@
 const {verify} = require('jsonwebtoken')
-const SECRET_KEY = process.env.SECRET_KEY
 // const {body, validationResult} = require('express-validator')
 // todo account, password, createdAt
 // todo 선택약관 정보는 따로 저장해야 한다.
 
 const utils = require('../../../utils')
-const std = require('../../../standards')
-const authNumStd = std.authNum
 
 module.exports = {
     validation: () => {
