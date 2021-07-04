@@ -21,6 +21,17 @@ module.exports = {
             let regExp = null
             let code = null
 
+            /*
+            let a = new Object()
+            let b = {}
+
+            let a = new Array()
+            let b = []
+
+            let c = new RegExp("a")
+            let d = /a/
+            */
+
             if (body.type === authNumStd.authNumTypePhone) {
                 regExp = /^01(?:0|1|[6-9])-(?:\d{3}|\d{4})-\d{4}$/;
                 code = '400_4'
@@ -32,9 +43,9 @@ module.exports = {
             }
 
             if (regExp !== null) {
-                const isValidKey = RegExp.error(body.key)
+                const isValidKey = regExp.test(body.key)
 
-                if (!isValidKey) {
+                if (isValidKey === false) {
                     res.status = 400
                     return res.json({code: code})
                 }
@@ -43,11 +54,10 @@ module.exports = {
             }
 
             // 6자리 맞는 지 인증번호 정규식으로 유효성체크
-            //todo 숫자로만 이루어져도 문자열로 체크... 문자열 못잡아냄.
-            let regex = new RegExp("^[a-zA-Z0-9]{" + std.authNum.length + "}$")
-            let isAuthNumValidKey = regex.test(body.authNum)
+            regExp = new RegExp("^[a-zA-Z0-9]{" + std.authNum.length + "}$")
+            let isAuthNumValidKey = regExp.test(body.authNum)
 
-            if (isAuthNumValidKey !== undefined && typeof isAuthNumValidKey === "string") {
+            if (isAuthNumValidKey === false) {
                 res.status = 400
                 return res.json({code: "400_5"})
             }
@@ -69,7 +79,7 @@ module.exports = {
         return (req, res, next) => {
             let body = req.body
             let auth = db.schema.auth
-            let isSearched = false
+            let bSearched = false
             let searchedPk = 1
 
             for (let pk in auth) {
@@ -85,19 +95,19 @@ module.exports = {
                         return res.json({code: '400_6'})
                     }
                     searchedPk = pk
-                    isSearched = true
+                    bSearched = true
                     break
                 }
             }
 
             // 인증 존재 체크
-            if (!isSearched) {
+            if (!bSearched) {
                 res.status = 404
                 return res.json({code: '404_1'})
             }
 
             // 인증 번호 체크
-            const authNum = req.body.authNum
+            const authNum = body.authNum
             const encryptedAuthNum = utils.encryption(authNum)
             const savedAuthNum = auth[searchedPk].authNum
             if (encryptedAuthNum !== savedAuthNum) {
@@ -118,20 +128,39 @@ module.exports = {
         }
     },
 
+    encryptionToken: () => {
+        return (req, res, next) => {
+            req.encryptedToken = utils.encryption(req.token)  // 서버에서 token 암호화
+
+            next()
+        }
+    },
+
     syncDB: (db) => {
         return (req, res, next) => {
             let body = req.body
-            let encryptedToken = utils.encryption(req.token)  // 서버에서 token 암호화
             let authToken = db.schema.authToken
+            let bSearched = false
+            const dbPk = db.pk
 
-            //todo 토큰값이 중복되면...?
-            //todo 토큰은 로그인할때마다 새로 발행되는건가요?
+            for (let pk in authToken) {
+                let searchedAuthToken = authToken[pk]
 
-            authToken[encryptedToken] = {
-                token: encryptedToken,
-                key: body.key,
-                type: body.type,
-                createdAt: Date.now()   //db에 token 저장
+                if (searchedAuthToken.type === body.type && searchedAuthToken.key === body.key) {
+                    bSearched = true
+                    searchedAuthToken.token = req.encryptedToken
+                    searchedAuthToken.createdAt = Date.now()
+                    break
+                }
+            }
+
+            if (bSearched === false) {
+                authToken[dbPk.authTokenPk++] = {
+                    token: req.encryptedToken,
+                    key: body.key,
+                    type: body.type,
+                    createdAt: Date.now()   //db에 token 저장
+                }
             }
 
             next()

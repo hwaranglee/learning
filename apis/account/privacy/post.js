@@ -11,6 +11,7 @@ const ko = std.language.ko
 const en = std.language.en
 
 const signUp = strings.signUp
+const userStd = std.user
 //let { id, password, rePassword, name, email, phone, country, language } = req.body
 
 module.exports = {
@@ -21,18 +22,12 @@ module.exports = {
                 .exists()
                 .isLength({ min: 8, max: 20 })
                 .withMessage(signUp.ID_ERROR_MSG),
-            // todo id 중복체크
             body("password")
                 .exists()
                 .withMessage(signUp.PASSWORD_ERROR_MSG)
                 .isStrongPassword()
-                .isLength({ min: 8 , max: 20})
+                .isLength({ min: userStd.passwordMinLength , max: userStd.passwordMaxLength})
                 .withMessage(signUp.PASSWORD_LENGTH_MSG),
-            body("rePassword")
-                .exists()
-                .isStrongPassword()
-                .equals("password")
-                .withMessage(signUp.RePASSWORD_ERROR_MSG),
             body("name")
                 .exists()
                 .isLength({ min: 1, max: 30 })
@@ -42,7 +37,6 @@ module.exports = {
                 .isEmail()
                 .isLength({ min: 5, max: 30 })
                 .withMessage(signUp.EMAIL_NO_ERROR_MSG),
-            // todo 이메일 중복 체크
             body("phone")
                 .exists()
                 .isMobilePhone("any")
@@ -50,48 +44,23 @@ module.exports = {
                 .withMessage(signUp.PHONE_NO_ERROR_MSG),
             body("country")
                 .exists()
-                .if(body("country").isIn([KO, US]))
+                .isIn([KO, US])
                 .withMessage(signUp.COUNTRY_ERROR_MSG),
             body("language")
                 .exists()
-                .if(body("language").isIn([ko, en]))
+                .isIn([ko, en])
                 .withMessage(signUp.LANGUAGE_ERROR_MSG),
+
             (req, res, next, resolve, reject) => {
-                const user = db.schema.user
-                user({where: {email: "email"}})
-                    .then(emailExist => {
-                        if (emailExist !== null) {
-                            reject(new Error(signUp.EMAIL_ERROR_MSG))
-                        } else {
-                            resolve(true)
-                        }
-                    })
-
-                user({where: {id: "id"}})
-                    .then(emailExist => {
-                        if (emailExist !== null) {
-                            reject(new Error(signUp.ID_REPEAT_MSG))
-                        } else {
-                            resolve(true)
-                        }
-                    })
-
                 const {errors} = validationResult(req)
-                if (errors.length !== 0) {
-                    return res.status(400).json({
-                        response: signUp.RESPONSE_FAIL,
-                        msg: signUp.RESPONSE_ERROR,
-                        errors: errors,
+                if (!errors || errors.length === 0) {
+                    next()
+                } else {
+                    res.status = 400
+                    return res.json({
+                        code: ""
                     })
                 }
-
-                // 토큰이 헤더에 담겨있는 지 확인
-                let token = req.headers.token
-                if (!token) {
-                    res.status(401)
-                    return res.json({code: "400_7"})
-                }
-                next()
             }
         ]
         return [...validChain]
@@ -140,7 +109,7 @@ module.exports = {
 
             // 회원가입 정보 저장
             // 원래 하고 싶었던건.. db에 저장된 authToken 안에 있는 값들을 가지고 와서 user 추가하고 싶었는데..
-            user[encryptedPassword] = {
+            user[body.id] = {
                 id: body.id,
                 password: encryptedPassword,
                 name: body.name,
@@ -151,7 +120,7 @@ module.exports = {
             }
 
             // 선택약관 캐싱 저장
-            optionalTerms[encryptedPassword] = {
+            optionalTerms[body.id] = {
                 id: body.id,
                 password: encryptedPassword,
                 name: body.name,

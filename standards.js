@@ -9,9 +9,12 @@ module.exports = {
     },
 
     user: {
-        passwordLength: 8,
-        TypePhone: "phone",
-        TypeEmail: "email",
+        idMinLength: 4,
+        idMaxLength: 20,
+        passwordMaxLength: 400,
+        passwordMinLength: 8,
+        genderMan: "man",
+        genderWoman: "woman"
     },
 
     country: {

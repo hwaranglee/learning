@@ -20,6 +20,7 @@ module.exports = {
 
             let regExp = null
             let code = null
+
             if (body.type === authNumStd.authNumTypePhone) {
                 regExp = /^01(?:0|1|[6-9])-(?:\d{3}|\d{4})-\d{4}$/;
                 code = '400_4'
@@ -31,7 +32,7 @@ module.exports = {
             }
 
             if (regExp !== null) {
-                const isValidKey = RegExp.error(body.key)
+                const isValidKey = regExp.exec(body.key)
 
                 if (!isValidKey) {
                     res.status = 400
@@ -64,13 +65,13 @@ module.exports = {
     syncDB: (db) => {
         return (req, res, next) => {
             let body = req.body
-            let authPk = db.pk.authPk
+            let dbPK = db.pk
             let auth = db.schema.auth
+            let bSearchedPk = false
 
-            let bAuthPk = False
             for (let pk in auth) {
-                if (auth[pk].type === body.type && auth.key === body.key) {
-                    bAuthPk = True
+                if (auth[pk].type === body.type && auth[pk].key === body.key) {
+                    bSearchedPk = true
                     auth[pk] = {
                         authNum: req.encryptionNum,
                         type: body.type,
@@ -81,14 +82,14 @@ module.exports = {
                 }
             }
 
-            if (bAuthPk = False) {
-                auth[pk] = {
+            if (bSearchedPk === false) {
+                auth[dbPK.authPk] = {
                     authNum: req.encryptionNum,
                     type: body.type,
                     key: body.key,
                     createdAt: Date.now()  //유닉스 타임
                 }
-                authPk++
+                dbPK.authPk++
             } else {
                 console.log('error')
             }

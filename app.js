@@ -6,16 +6,15 @@ let db = require('./db')
 
 const authNumsPost = require('./apis/account/auth-nums/post')
 const authNumTokensPost = require('./apis/account/auth-num-tokens/post')
-const privacyPost = require('./apis/account/privacy/post')
+const usersPost = require('./apis/account/users/post')
 
 // settings
 const app = express()
 const port = 3000
 
 // global middlewares
-app.use(bodyParser.urlencoded({
-    extended: true
-}));
+app.use(bodyParser.urlencoded({extended: true}))
+app.use(bodyParser.raw())
 
 // listen
 app.listen(port, () => {
@@ -36,15 +35,17 @@ app.post('/auth-num-tokens',
     authNumTokensPost.encryption(),
     authNumTokensPost.validationAuthNum(db),
     authNumTokensPost.tokenGenerator(),
+    authNumTokensPost.encryptionToken(),
     authNumTokensPost.syncDB(db),
     authNumTokensPost.responder()
 )
 
-app.post('/privacy',
-    privacyPost.validation(db),
-    privacyPost.tokenEncryption(),
-    privacyPost.validationToken(db),
-    privacyPost.passwordEncryption(),
-    privacyPost.syncDB(db),
-    privacyPost.responder()
-    )
+app.post('/users',
+    usersPost.validation(),
+    usersPost.duplicatedKeyChecker(db),
+    usersPost.encryptionToken(),
+    usersPost.validationToken(db),
+    usersPost.encryptionPassword(),
+    usersPost.syncDB(db),
+    usersPost.responder()
+)
