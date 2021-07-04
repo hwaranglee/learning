@@ -4,7 +4,7 @@ const bodyParser = require('body-parser')
 const authRouter = require('./routes/auth')
 
 const app = express()
-const port = 3000
+const port = 80
 
 // global middlewares
 app.use(bodyParser.json())
