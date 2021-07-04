@@ -1,5 +1,5 @@
 const { check, body, validationResult } = require('express-validator')
-const { createRandomString, encryption } = require('../../../utils')
+const { createRandomString, encryption, getValueByType } = require('../../../utils')
 const { strings } = require('../../../constants/strings')
 const { authNum } = require('../../../standards')
 const { authNumTypePhone: phoneType, authNumTypeEmail: emailType, length, expiredMinute } = authNum
@@ -10,6 +10,8 @@ module.exports = {
     const res = [
       // TODO 유효성 검사 추가
       check('type', codes['400_2']).not().isEmpty(),
+      check('email', codes['400_2']).if(body('type').isIn([emailType])).not().isEmpty(),
+      check('phone', codes['400_2']).if(body('type').isIn([phoneType])).not().isEmpty(),
       check('type')
         .exists()
         .isIn([phoneType, emailType])
@@ -53,16 +55,17 @@ module.exports = {
   syncDB: (db) => {
     return (req, res, next) => {
       const { body, encryptionAuthNum } = req
-      const type = body?.type
-
+      const typeValue = getValueByType(body)
       const createdAt = new Date()
 
       // pk ??
-      db.schema.auth[type] = {
+      db.schema.auth[typeValue] = {
         createdAt: new Date(),
-        expiredMinute: createdAt + expiredMinute * 60000,
+        expiredAt: createdAt + expiredMinute * 60000, // 3m
         encryptionAuthNum
       }
+
+      console.log(db.schema.auth)
 
       next()
     }
@@ -70,8 +73,7 @@ module.exports = {
 
   responder: () => {
     return (req, res) => {
-      res.json({
-        status: 200,
+      res.status(200).json({
         res: strings.RES_SUCCESS,
         msg: strings.SEND_AUTH,
         authNum: req.authNum,
