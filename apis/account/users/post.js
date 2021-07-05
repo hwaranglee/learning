@@ -1,6 +1,6 @@
 const { verify } = require('jsonwebtoken')
 // todo express-validator로 refactor
-// const {body, validationResult} = require('express-validator')
+// const { body, validationResult } = require('express-validator')
 
 const utils = require('../../../utils')
 

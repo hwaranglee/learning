@@ -1,8 +1,10 @@
 const { body, validationResult } = require('express-validator')
+const validator = require('../../../validator/users')
 
 module.exports = {
     validation: () => {
-        return body('email').isEmail()
+        return validator.validator
+        // return body('email').isEmail()
     },
 
     responder: () => {
