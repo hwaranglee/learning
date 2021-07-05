@@ -1,8 +1,6 @@
 const utils = require('../../../utils')
 const std = require('../../../standards')
 
-const authNumStd = std.authNum
-
 module.exports = {
     /*
      * id
@@ -23,7 +21,7 @@ module.exports = {
                 return res.status(400).json({code: '400_8'})
             }
 
-            //최소 8 자, 최소 하나의 문자 및 하나의 숫자r
+            //최소 8 자
             regExp = new RegExp("^[a-zA-Z0-9]{" + userStd.passwordMinLength + "," + userStd.passwordMaxLength + "}$")
             if (regExp.test(body.password) === false) {
                 return res.status(400).json({code: '400_9'})
@@ -81,7 +79,6 @@ module.exports = {
 
     validationToken: (db) => {
         return (req, res, next) => {
-            const body = req.body
             const authToken = db.schema.authToken
             let bSearched = false
             let auth = req.auth = {}

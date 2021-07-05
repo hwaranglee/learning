@@ -1,5 +1,6 @@
 module.exports = {
     signUp:{
+        ERROR : "error",
         TYPE_ERROR: "type error",
         PHONE_NO_ERROR_MSG: "잘못된 번호입니다.",
         EMAIL_NO_ERROR_MSG: "잘못된 이메일 입니다.",

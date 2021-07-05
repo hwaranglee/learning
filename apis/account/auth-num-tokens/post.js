@@ -1,5 +1,6 @@
 const utils = require('../../../utils')
 const std = require('../../../standards')
+const str = require('../../../strings')
 
 const authNumStd = std.authNum
 
@@ -20,17 +21,7 @@ module.exports = {
 
             let regExp = null
             let code = null
-
-            /*
-            let a = new Object()
-            let b = {}
-
-            let a = new Array()
-            let b = []
-
-            let c = new RegExp("a")
-            let d = /a/
-            */
+            const signUp = str.signUp
 
             if (body.type === authNumStd.authNumTypePhone) {
                 regExp = /^01(?:0|1|[6-9])-(?:\d{3}|\d{4})-\d{4}$/;
@@ -39,7 +30,7 @@ module.exports = {
                 regExp = /^[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*.[a-zA-Z]{2,3}$/i;
                 code = '400_3'
             } else {
-                console.log("type error입니다.")
+                console.log(signUp.TYPE_ERROR)
             }
 
             if (regExp !== null) {
@@ -50,10 +41,10 @@ module.exports = {
                     return res.json({code: code})
                 }
             } else {
-                console.log("type error입니다.")
+                console.log(signUp.ERROR)
             }
 
-            // 6자리 맞는 지 인증번호 정규식으로 유효성체크
+            // 6자리 맞는지 인증번호 정규식으로 유효성체크
             regExp = new RegExp("^[a-zA-Z0-9]{" + std.authNum.length + "}$")
             let isAuthNumValidKey = regExp.test(body.authNum)
 
