@@ -1,3 +1,4 @@
+const { body, validationResult } = require('express-validator')
 const utils = require('../../../utils')
 const std = require('../../../standards')
 const authNumStd = std.authNum
@@ -65,18 +66,18 @@ module.exports = {
             //신규 유저일 때만 pk 증가
             let _id = null
             if(!existUser) {
-                _id = db.pk.authPk
                 db.pk.authPk += 1
+                _id = db.pk.authPk
             } else {
                 _id = existUser._id
             }
 
-            const authObj = {
+            const authNumObj = {
                 _id,
                 encryptNum,
                 expireAt: Date.now() + 1000 * 60 * 3
             }
-            db.schema.auth[value] = authObj
+            db.schema.auth[value] = authNumObj
 
             next()
         }

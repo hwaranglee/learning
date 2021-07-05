@@ -3,7 +3,7 @@ module.exports = {
         length: 6,
         expiredMinute: 3,
         tokenLength: 60,
-        tokenExpiredMinute: 60,
+        tokenExpiredSecond: 600,
         authNumTypePhone: "phone",
         authNumTypeEmail: "email"
     }

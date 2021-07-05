@@ -1,13 +1,13 @@
 let db = {
     pk: {
-        authPk: 1,
-        userPk: 1,
-        loginHistoryPk: 1,
-        termsPk: 1,
-        optionalTermsPk: 1,
-        versionPk: 1,
-        extinctUserPk: 1,
-        authTokenPk: 1
+        authPk: 0,
+        userPk: 0,
+        loginHistoryPk: 0,
+        termsPk: 0,
+        optionalTermsPk: 0,
+        versionPk: 0,
+        extinctUserPk: 0,
+        authTokenPk: 0
     },
     schema: {
         authToken: {},

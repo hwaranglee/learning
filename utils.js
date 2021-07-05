@@ -1,3 +1,4 @@
+const { body, validationResult } = require('express-validator')
 const crypto = require('crypto')
 
 module.exports = {
@@ -11,6 +12,7 @@ module.exports = {
         }
         return result;
     },
+
     encryption: (str) => {
         return crypto.createHash('sha512').update(str).digest('base64');
     }
