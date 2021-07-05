@@ -1,37 +1,42 @@
 const { verify } = require('jsonwebtoken')
+
 // todo express-validator로 refactor
-// const { body, validationResult } = require('express-validator')
+const { body, validationResult } = require('../../../validator/users')
 
 const utils = require('../../../utils')
 
 module.exports = {
     validation: () => {
-        return (req, res, next) => {
-            const { account, password } = req.body
-            const authorization = req.headers.authorization
-
-            if (
-                account === undefined ||
-                password === undefined ||
-                authorization === undefined
-            ) {
-                return res.status(400).json({ code: '400_1' })
-            }
-
-            const regExpAccount = /^[0-9a-z]{6,12}$/
-            if (!regExpAccount.test(account) || typeof account !== 'string') {
-                return res.status(400).json({ code: '400_7' })
-            }
-
-            const regExpPassword =
-                /^(?=.*[a-zA-z])(?=.*[0-9])(?=.*[$`~!@$!%*#^?&\\(\\)\-_=+])(?!.*[^a-zA-z0-9$`~!@$!%*#^?&\\(\\)\-_=+]).{8,16}$/
-            if (!regExpPassword.test(password)) {
-                return res.status(400).json({ code: '400_8' })
-            }
-
-            next()
-        }
+        return [...body, validationResult]
     },
+
+    // validation: () => {
+    //     return (req, res, next) => {
+    //         const { account, password } = req.body
+    //         const authorization = req.headers.authorization
+    //
+    //         if (
+    //             account === undefined ||
+    //             password === undefined ||
+    //             authorization === undefined
+    //         ) {
+    //             return res.status(400).json({ code: '400_1' })
+    //         }
+    //
+    //         const regExpAccount = /^[0-9a-z]{6,12}$/
+    //         if (!regExpAccount.test(account) || typeof account !== 'string') {
+    //             return res.status(400).json({ code: '400_7' })
+    //         }
+    //
+    //         const regExpPassword =
+    //             /^(?=.*[a-zA-z])(?=.*[0-9])(?=.*[$`~!@$!%*#^?&\\(\\)\-_=+])(?!.*[^a-zA-z0-9$`~!@$!%*#^?&\\(\\)\-_=+]).{8,16}$/
+    //         if (!regExpPassword.test(password)) {
+    //             return res.status(400).json({ code: '400_8' })
+    //         }
+    //
+    //         next()
+    //     }
+    // },
 
     tokenVerifier: () => {
         return (req, res, next) => {
