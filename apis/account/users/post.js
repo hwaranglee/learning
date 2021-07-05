@@ -1,7 +1,6 @@
 const {verify} = require('jsonwebtoken')
+// todo express-validator로 refactor
 // const {body, validationResult} = require('express-validator')
-// todo account, password, createdAt
-// todo 선택약관 정보는 따로 저장해야 한다.
 
 const utils = require('../../../utils')
 
@@ -13,7 +12,6 @@ module.exports = {
 
             if (account === undefined || password === undefined || authorization === undefined) {
                 return res.status(400).json({code: "400_1"})
-                // todo express-validator로 refactor
             }
 
             const regExpAccount = /^[0-9a-z]{6,12}$/

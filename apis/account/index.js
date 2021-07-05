@@ -5,7 +5,7 @@ const db = require('../../db/index')
 
 const authNumsPost = require('./auth-nums/post')
 const authNumTokensPost = require('./auth-num-tokens/post')
-const accountsPost = require('./accounts/post')
+const usersPost = require('./users/post')
 // validator 연습용
 const validatorPost = require('./validator/post')
 
@@ -29,13 +29,13 @@ router.post('/auth-num-tokens',
     authNumTokensPost.responder()
 )
 
-router.post('/accounts',
-    accountsPost.validation(),
-    accountsPost.tokenVerifier(),
-    accountsPost.passwordEncryption(), // user 별로 다른 salt 값을 갖도록
-    accountsPost.syncDBUser(db),
-    accountsPost.syncDBOptionalTerms(db),
-    accountsPost.responder()
+router.post('/users',
+    usersPost.validation(),
+    usersPost.tokenVerifier(),
+    usersPost.passwordEncryption(),
+    usersPost.syncDBUser(db),
+    usersPost.syncDBOptionalTerms(db),
+    usersPost.responder()
 )
 
 // validator 연습용

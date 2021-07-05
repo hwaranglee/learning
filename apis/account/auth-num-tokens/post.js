@@ -48,7 +48,6 @@ module.exports = {
 
     encryption: () => {
         return (req, res, next) => {
-            // 유효성 검사가 끝난 인증번호를 다시 암호화
             req.authNumEncrypt = utils.encryption(req.body.authNum)
 
             next()
@@ -57,7 +56,6 @@ module.exports = {
 
     validationAutNum: (db) => {
         return (req, res, next) => {
-            // 암호화된 인증번호를 db와 비교하여 검증
             let body = req.body
             let auth = db.schema.auth
             let requestedAt = Date.now()
@@ -97,7 +95,6 @@ module.exports = {
 
     tokenGenerator: () => {
         return (req, res, next) => {
-            // JWT 생성
             req.token = jwt.sign({authPk: req.authPk}, SECRET_KEY, {expiresIn: `${authNumStd.tokenExpiredMinute}m`})
 
             next()

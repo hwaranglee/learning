@@ -61,14 +61,7 @@ module.exports = {
             let pk = db.pk
 
             let bExistence = false
-            // auth = {
-            //     1: {
-            //         authNumEncrypt: '',
-            //         key: ''
-            //     }
-            // }
             for (let authPk in auth) {
-                // type 까지
                 if (auth[authPk].type === body.type && auth[authPk].key === body.key) {
                 // if (auth[authPk].key === body.key) { // 이건 key값만 확인해도 되지 않을까?
                 // 질문. 악의적인 목적을 가지고 010-1111-1111이라는 번호로 계속해서 요청을 보내고 있는 상황이라고 가정을 해보자.
@@ -104,8 +97,7 @@ module.exports = {
 
     responder: () => {
         return (req, res) => {
-            res.json({authNum: req.authNum})
-            // res.status(201).json({authNum: req.authNum})
+            res.status(201).json({authNum: req.authNum})
         }
     }
 }
