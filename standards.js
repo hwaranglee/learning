@@ -4,7 +4,7 @@ module.exports = {
         expiredMinute: 3,
         tokenLength: 60,
         tokenExpiredMinute: 60,
-        authNumTypePhone: "phone",
-        authNumTypeEmail: "email"
-    }
+        authNumTypePhone: 'phone',
+        authNumTypeEmail: 'email',
+    },
 }

@@ -10,21 +10,29 @@ module.exports = {
         return (req, res, next) => {
             let body = req.body
 
-            if (body.type === undefined || body.key === undefined || body.authNum === undefined) {
+            if (
+                body.type === undefined ||
+                body.key === undefined ||
+                body.authNum === undefined
+            ) {
                 res.status(400)
-                return res.json({code: "400_2"})
+                return res.json({ code: '400_2' })
             }
 
-            if (body.type !== authNumStd.authNumTypeEmail && body.type !== authNumStd.authNumTypePhone) {
+            if (
+                body.type !== authNumStd.authNumTypeEmail &&
+                body.type !== authNumStd.authNumTypePhone
+            ) {
                 res.status(400)
-                return res.json({code: "400_1"})
+                return res.json({ code: '400_1' })
             }
 
             if (body.type === authNumStd.authNumTypeEmail) {
-                let regExp = /^[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*.[a-zA-Z]{2,3}$/i
+                let regExp =
+                    /^[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*.[a-zA-Z]{2,3}$/i
                 if (!regExp.test(body.key)) {
                     res.status(400)
-                    return res.json({code: "400_3"})
+                    return res.json({ code: '400_3' })
                 }
             }
 
@@ -32,14 +40,17 @@ module.exports = {
                 let regExp = /^\d{3}-\d{3,4}-\d{4}$/
                 if (!regExp.test(body.key)) {
                     res.status(400)
-                    return res.json({code: "400_4"})
+                    return res.json({ code: '400_4' })
                 }
             }
 
             let regExp = /^[0-9A-Za-z]{6}$/
-            if (!regExp.test(body.authNum) || typeof body.authNum !== "string") {
+            if (
+                !regExp.test(body.authNum) ||
+                typeof body.authNum !== 'string'
+            ) {
                 res.status(400)
-                return res.json({code: "400_5"})
+                return res.json({ code: '400_5' })
             }
 
             next()
@@ -66,17 +77,23 @@ module.exports = {
 
             let bExistence = false
             for (let authPk in auth) {
-                if (auth[authPk].type === body.type && auth[authPk].key === body.key) {
+                if (
+                    auth[authPk].type === body.type &&
+                    auth[authPk].key === body.key
+                ) {
                     bExistence = true
 
-                    if (requestedAt - auth[authPk].createdAt > authNumStd.expiredMinute * 60 * 1000) {
+                    if (
+                        requestedAt - auth[authPk].createdAt >
+                        authNumStd.expiredMinute * 60 * 1000
+                    ) {
                         res.status(400)
-                        return res.json({code: "400_6"})
+                        return res.json({ code: '400_6' })
                     }
 
                     if (auth[authPk].authNumEncrypt !== req.authNumEncrypt) {
                         res.status(401)
-                        return res.json({code: "401_1"})
+                        return res.json({ code: '401_1' })
                     }
                 }
 
@@ -86,7 +103,7 @@ module.exports = {
 
             if (!bExistence) {
                 res.status(404)
-                return res.json({code: "404_1"})
+                return res.json({ code: '404_1' })
             }
 
             next()
@@ -95,7 +112,9 @@ module.exports = {
 
     tokenGenerator: () => {
         return (req, res, next) => {
-            req.token = jwt.sign({authPk: req.authPk}, SECRET_KEY, {expiresIn: `${authNumStd.tokenExpiredMinute}m`})
+            req.token = jwt.sign({ authPk: req.authPk }, SECRET_KEY, {
+                expiresIn: `${authNumStd.tokenExpiredMinute}m`,
+            })
 
             next()
         }
@@ -113,8 +132,8 @@ module.exports = {
     responder: () => {
         return (req, res) => {
             res.json({
-                token: req.token
+                token: req.token,
             })
         }
-    }
+    },
 }

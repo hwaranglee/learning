@@ -10,9 +10,11 @@ const port = 3000
 
 // global middlewares
 app.use(bodyParser.json())
-app.use(bodyParser.urlencoded({
-    extended: true
-}))
+app.use(
+    bodyParser.urlencoded({
+        extended: true,
+    }),
+)
 
 // listen
 app.listen(port, () => {
