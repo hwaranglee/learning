@@ -45,14 +45,9 @@ router.post(
 router.post('/validator', validatorPost.validation(), validatorPost.responder())
 
 // 테스트용
-const { testing } = require('../../validator/users')
-router.post(
-    '/test',
-    testing,
-    // (req, res, next) => {
-    // const ip = req.header['x-forwarded-for'] || req.connection.remoteAddress
-    // console.log('ip: ', ip)
-    // console.log('user-agent: ', req.headers['user-agent'])
-    // res.json('hello')
-    // }
-)
+router.post('/test', (req, res, next) => {
+    const ip = req.header['x-forwarded-for'] || req.connection.remoteAddress
+    console.log('ip: ', ip)
+    console.log('user-agent: ', req.headers['user-agent'])
+    res.json('hello')
+})

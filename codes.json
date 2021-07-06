@@ -10,6 +10,13 @@
   "400_7": "잘못된 유저 아이디이다.",
   "400_8": "잘못된 유저 비밀번호이다.",
   "400_9": "잘못된 JWT이다.",
+  "400_10": "account is undefined",
+  "400_11": "account must be String",
+  "400_12": "account length is between 6 and 12",
+  "400_13": "password is undefined",
+  "400_14": "invalid password form",
+  "400_15": "authorization not in headers",
+  "400_16": "authorization is not JWT",
 
   "401_1": "인증번호가 틀렸습니다.",
 

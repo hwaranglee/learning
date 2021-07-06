@@ -1,15 +1,15 @@
 const { verify } = require('jsonwebtoken')
 
 // todo express-validator로 refactor
-const { body, validationResult } = require('../../../validator/users')
-
 const utils = require('../../../utils')
+const { check, validationResult } = require('../../../validator/users')
 
 module.exports = {
     validation: () => {
-        return [...body, validationResult]
+        return [...check, validationResult]
     },
 
+    // ! 정규식을 이용한 validation
     // validation: () => {
     //     return (req, res, next) => {
     //         const { account, password } = req.body
@@ -97,7 +97,7 @@ module.exports = {
             pk.userPk++
 
             // ! check
-            console.log('user: ', user)
+            // console.log('user: ', user)
 
             next()
         }
