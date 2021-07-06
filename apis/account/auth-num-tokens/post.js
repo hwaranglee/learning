@@ -72,8 +72,8 @@ module.exports = {
             let requestedAt = Date.now()
 
             // ! check
-            // console.log("auth: ", auth)
-            // console.log("body: ", body)
+            // console.log('auth: ', auth)
+            // console.log('body: ', body)
 
             let bExistence = false
             for (let authPk in auth) {
@@ -87,18 +87,16 @@ module.exports = {
                         requestedAt - auth[authPk].createdAt >
                         authNumStd.expiredMinute * 60 * 1000
                     ) {
-                        res.status(400)
-                        return res.json({ code: '400_6' })
+                        return res.status(400).json({ code: '400_6' })
                     }
 
                     if (auth[authPk].authNumEncrypt !== req.authNumEncrypt) {
-                        res.status(401)
-                        return res.json({ code: '401_1' })
+                        return res.status(401).json({ code: '401_1' })
                     }
-                }
 
-                req.authPk = authPk
-                break
+                    req.authPk = authPk
+                    break
+                }
             }
 
             if (!bExistence) {

@@ -36,7 +36,7 @@ router.post(
     usersPost.validation(),
     usersPost.tokenVerifier(),
     usersPost.passwordEncryption(),
-    usersPost.syncDBUser(db),
+    usersPost.syncDBUserAuthToken(db),
     usersPost.syncDBOptionalTerms(db),
     usersPost.responder(),
 )

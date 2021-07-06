@@ -18,12 +18,22 @@ module.exports = {
                 /^(?=.*[a-zA-z])(?=.*[0-9])(?=.*[$`~!@$!%*#^?&\\(\\)\-_=+])(?!.*[^a-zA-z0-9$`~!@$!%*#^?&\\(\\)\-_=+]).{8,16}$/,
             ) // client와 동일한 정규식을 사용하기 위해 matches를 사용
             .withMessage('code: 400_14'),
+        body('email')
+            .exists()
+            .withMessage('code: 400_15')
+            .isEmail()
+            .withMessage('code: 400_16'),
+        body('phone')
+            .exists()
+            .withMessage('code: 400_17')
+            .isMobilePhone()
+            .withMessage('code: 400_18'),
         header('authorization')
             // ! 질문 exists가 정말 필요한가?
             .exists()
-            .withMessage('code: 400_15')
+            .withMessage('code: 400_')
             .isJWT()
-            .withMessage('code: 400_16'),
+            .withMessage('code: 400_'),
     ],
     validationResult: (req, res, next) => {
         let errors = validationResult(req)
@@ -37,6 +47,7 @@ module.exports = {
             return res.status(400).json({ errors })
         }
 
+        // res.json('OK')
         next()
     },
 }

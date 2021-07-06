@@ -3,6 +3,8 @@ const { verify } = require('jsonwebtoken')
 // todo express-validator로 refactor
 const utils = require('../../../utils')
 const { check, validationResult } = require('../../../validator/users')
+const std = require('../../../standards')
+const authNumStd = std.authNum
 
 module.exports = {
     validation: () => {
@@ -43,11 +45,17 @@ module.exports = {
             const authorization = req.headers.authorization
 
             try {
-                verify(authorization, process.env.SECRET_KEY)
+                // req.authPk는 토큰이 탈취된 상황에서 발생할 수 있는 문제를 방지하는 데 사용된다.
+                // cf> JWT에 key값(email 또는 phone)을 넣지 않았던 까닭은, JWT이 탈취되었다는 가정이라면 이미 JWT를 까볼 수 있기 때문이다.
+                // 따라서 authPk만 넣어두고 서버에서 DB를 조회하는 형식으로 코드를 작성했다.
+                req.authPk = verify(
+                    authorization,
+                    process.env.SECRET_KEY,
+                ).authPk
 
                 next()
             } catch (err) {
-                return res.status(400).json({ code: '400_9' })
+                return res.status(400).json({ code: '400_9', err })
             }
         }
     },
@@ -65,12 +73,44 @@ module.exports = {
         }
     },
 
-    syncDBUser: (db) => {
+    // ! 나눠야 할까?
+    syncDBUserAuthToken: (db) => {
         return (req, res, next) => {
-            const { account } = req.body
-            const { password, salt } = req
             const user = db.schema.user
+            const auth = db.schema.auth
+            const authToken = db.schema.authToken
             const pk = db.pk
+            const authorization = req.headers.authorization
+            const { account, email, phone } = req.body
+            const { password, salt, authPk } = req
+            let bAuthorizationUsed = false
+
+            for (let authTokenPk in authToken) {
+                if (authToken[authTokenPk].authorization === authorization) {
+                    bAuthorizationUsed = true
+                    break
+                }
+            }
+
+            // (1) 회원가입 후 회원가입에 사용한 authorization(토큰)은 db.schema.authToken에 저장하여 같은 authToken으로 중복가입하는 것을 막는다.
+            if (bAuthorizationUsed) {
+                return res.status(401).json({ code: '401_2' })
+            }
+
+            // (2) authToken을 발급받은 자가 authToken 발급 시 기입한 email 또는 phone으로 가입하는 지를 확인하여 token이 탈취되었을 가능성에 대비한다.
+            // ! 질문: db를 한번 더 조회해야한다는 비효율에 대해
+            // cf> authToken의 탈취 가능성에 대비하여 authToken의 expire 시간을 줄이는 방안도 생각해볼 수 있다.
+            if (
+                auth[authPk].type === authNumStd.authNumTypeEmail &&
+                auth[authPk].key !== email
+            ) {
+                return res.status(401).json({ code: '401_3' })
+            } else if (
+                auth[authPk].type === authNumStd.authNumTypePhone &&
+                auth[authPk].key !== phone
+            ) {
+                return res.status(401).json({ code: '401_4' })
+            }
 
             // account 중복 확인
             for (let userPk in user) {
@@ -89,6 +129,8 @@ module.exports = {
             user[pk.userPk] = {
                 account,
                 password,
+                email,
+                phone,
                 salt,
                 createdAt: Date.now(),
             }
@@ -96,8 +138,17 @@ module.exports = {
             req.userPk = pk.userPk
             pk.userPk++
 
+            authToken[pk.authTokenPk] = {
+                authorization,
+                createdAt: Date.now(),
+            }
+
+            pk.authTokenPk++
+
             // ! check
             // console.log('user: ', user)
+            // console.log('auth: ', auth)
+            // console.log('authToken: ', authToken)
 
             next()
         }
@@ -129,7 +180,7 @@ module.exports = {
     },
 
     responder: () => {
-        return (req, res, next) => {
+        return (req, res) => {
             res.status(201).json({ code: '201_1' })
         }
     },
