@@ -73,7 +73,7 @@ module.exports = {
         }
     },
 
-    // ! 나눠야 할까?
+    // ! 질문: syncDBUser/syncDBAuthToken으로 나눠야 할까? 하나의 작업으로 묶여있다는 생각이 강해서 일단은 묶어놨음.
     syncDBUserAuthToken: (db) => {
         return (req, res, next) => {
             const user = db.schema.user
