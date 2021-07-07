@@ -37,7 +37,7 @@ module.exports = {
     };
   },
 
-  validationAutNum: (db) => {
+  validationAuth: (db) => {
     return (req, res, next) => {
       const { authNumEnc, body } = req;
       const { type } = body;
@@ -45,7 +45,7 @@ module.exports = {
       const row = db.schema.authNum[key];
 
       if (row === undefined) {
-        return res.status(400).json({
+        return res.status(404).json({
           response: strings.RESPONSE_ERROR,
           msg: strings.NOT_FOUND_AUTH_ROW_ERROR_MSG,
         });
@@ -84,6 +84,7 @@ module.exports = {
 
   tokenGenerator: () => {
     return (req, res, next) => {
+      // ? payload 안에 key 외에도 type 등 검증로직
       req.token = sign(
         {
           key: req.key,
