@@ -51,3 +51,5 @@ router.post('/test', (req, res, next) => {
     console.log('user-agent: ', req.headers['user-agent'])
     res.json('hello')
 })
+
+// CLI push test
