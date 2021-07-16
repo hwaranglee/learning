@@ -1,4 +1,9 @@
 const codes = require('../codes.json')
+// ! 쓱싹서버에서 키워드 rows, count를 반드시 찾아보도록
+// ! 질문 대소문자 관련: url도 하이픈으로 쓴다.
+// ! url은 너무 길면 안좋음. limit이 있거든. (query 할 때 배열 때려넣지 말라는 거야.)
+// ! 좋은 키워드 하나: snippet code
+// ! class
 
 module.exports = {
     openapi: '3.0.0',
@@ -40,7 +45,8 @@ module.exports = {
                                         enums: ['email', 'phone'],
                                     },
                                     key: {
-                                        type: 'string',
+                                        type: 'string', // 정규식을 or로 연결하던가, 최소한 lenth check라도
+                                        // ! check length check 언제나 해야한다.
                                         // ! check example은 어떻게 주는 게 좋을까? phone, email의 예시가 각각 다를테니...
                                         // example: '010-1111-1111',
                                     },
@@ -68,10 +74,13 @@ module.exports = {
                                     type: 'object',
                                     required: ['code', 'authNum'],
                                     properties: {
+                                        // ! check validation 추가해야 한다. length는 언제나 중요. length 가져올 때는 std require.
+                                        // ! 정규식 같은 거 추가할 때도 require 하기. 하늘색(상수값)을 코드에서 볼 수 없게 하라. 방어적으로 코드해야함. 상수하나 때문에 가입 못하는 불상사가 생길 수 있다.
                                         code: { type: 'string' },
                                         authNum: { type: 'string' },
                                     },
                                     example: {
+                                        // ! 통일된 form으로
                                         code: '201_2',
                                         authNum: 'LA8x1B',
                                     },
@@ -79,6 +88,7 @@ module.exports = {
                             },
                         },
                     },
+                    // ! 다른 response도 다 복붙
                     400: { $ref: '#/components/responses/BadRequest' },
                 },
             },
@@ -140,6 +150,7 @@ module.exports = {
                             },
                         },
                     },
+                    // ! keyword or 조건 (분기를 위한 방법)
                     400: { $ref: '#/components/responses/BadRequest' },
                     401: { $ref: '#/components/responses/Unauthorized' },
                     404: { $ref: '#/components/responses/NotFound' },
@@ -173,6 +184,7 @@ module.exports = {
                         schema: {
                             type: 'string',
                         },
+                        // ! check Bearer nono. 세션으로 오해할 수도. body에 담아라.(에릭 추천)
                         example:
                             'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdXRoUGsiOiIxIiwiaWF0IjoxNjI2MzMzNTM2LCJleHAiOjE2MjYzMzcxMzZ9.J8gsCWQjXDQqmudKcApI_1fKJOHLaxSBJzwAjYA21CE',
                     },
@@ -194,9 +206,11 @@ module.exports = {
                                 ],
                                 properties: {
                                     account: {
+                                        // ! check
                                         type: 'string',
                                     },
                                     password: {
+                                        // ! check 클라이언트도 알 수 있게.
                                         type: 'string',
                                     },
                                     email: {
@@ -206,6 +220,8 @@ module.exports = {
                                         type: 'string',
                                     },
                                     BTerms1: {
+                                        // ! 헝가리언 소문자로
+                                        // ! 선택약관은 배열로 받아서 범용적으로.
                                         type: 'boolean',
                                     },
                                     BTerms2: {
@@ -218,6 +234,7 @@ module.exports = {
                                 additionalProperties: false,
                                 example: {
                                     account: 'helloworld',
+                                    // ! 키워드 format: 'password'
                                     password: 'asdf123!@#',
                                     email: 'hello@example.com',
                                     phone: '010-1111-1111',
