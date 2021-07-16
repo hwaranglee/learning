@@ -168,7 +168,7 @@ module.exports = {
                         name: 'authorization',
                         in: 'header',
                         description:
-                            'Value: Bearer JWT (Swagger UI에서 Try it out을 위해 Authorize할 시에는 Bearer를 제외한 토큰 값만 입렵하면 됩니다.',
+                            'Value: Bearer JWT (Swagger UI에서 Try it out을 위해 Authorize할 시에는 Bearer를 제외한 토큰 값만 입렵하면 됩니다.)',
                         required: true,
                         schema: {
                             type: 'string',
