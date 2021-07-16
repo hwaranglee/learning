@@ -104,7 +104,7 @@ module.exports = {
 
     responder: () => {
         return (req, res) => {
-            res.status(201).json({ authNum: req.authNum })
+            res.status(201).json({ code: '201_2', authNum: req.authNum })
         }
     },
 }

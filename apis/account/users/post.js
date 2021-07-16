@@ -42,7 +42,7 @@ module.exports = {
 
     tokenVerifier: () => {
         return (req, res, next) => {
-            const authorization = req.headers.authorization
+            const authorization = req.headers.authorization.split('Bearer ')[1]
 
             try {
                 // req.authPk는 토큰이 탈취된 상황에서 발생할 수 있는 문제를 방지하는 데 사용된다.
@@ -55,7 +55,7 @@ module.exports = {
 
                 next()
             } catch (err) {
-                return res.status(400).json({ code: '400_9', err })
+                return res.status(400).json({ code: '401_5', err })
             }
         }
     },

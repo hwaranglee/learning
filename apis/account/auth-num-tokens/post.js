@@ -129,9 +129,7 @@ module.exports = {
 
     responder: () => {
         return (req, res) => {
-            res.json({
-                token: req.token,
-            })
+            res.status(201).json({ code: '201_3', token: req.token })
         }
     },
 }

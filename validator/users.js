@@ -28,12 +28,25 @@ module.exports = {
             .withMessage('code: 400_17')
             .isMobilePhone()
             .withMessage('code: 400_18'),
+        body('BTerms1')
+            .exists()
+            .withMessage('code: 400_2')
+            .isBoolean()
+            .withMessage('code: 400_21'),
+        body('BTerms2')
+            .exists()
+            .withMessage('code: 400_2')
+            .isBoolean()
+            .withMessage('code: 400_21'),
+        body('BTerms3')
+            .exists()
+            .withMessage('code: 400_2')
+            .isBoolean()
+            .withMessage('code: 400_21'),
         header('authorization')
             // ! 질문 exists가 정말 필요한가?
             .exists()
-            .withMessage('code: 400_')
-            .isJWT()
-            .withMessage('code: 400_'),
+            .withMessage('code: 401_6'),
     ],
     validationResult: (req, res, next) => {
         let errors = validationResult(req)
@@ -47,7 +60,6 @@ module.exports = {
             return res.status(400).json({ errors })
         }
 
-        // res.json('OK')
         next()
     },
 }
